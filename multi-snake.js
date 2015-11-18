@@ -11,5 +11,8 @@ http.listen(8080, function(){
 });
 
 io.on('connection', function(socket){
-    console.log(socket);
+    console.log('a user connected');
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+    });
 });
