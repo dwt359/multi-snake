@@ -2,7 +2,7 @@ var app = require('express')();
 var http = require('http').Server(app);
 
 app.get('/', function(req, res){
-	res.sendFile('index.html');
+	res.sendFile(__dirname + 'index.html');
 });
 
 http.listen(8080, function(){
