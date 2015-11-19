@@ -24,14 +24,19 @@
     <script>
         var socket = io();
         var host = false;
+        var playerNum = -1;
         socket.on('host', function(e){
             console.dir(e);
             host = true;
         });
+        socket.on('player', function(e){
+            playerNum = e;
+        });
         $('body').on('keydown', function(e){
             if(e.keyCode >= 37 && e.keyCode <= 40) {
                 socket.emit('key', {
-                    code: e.keyCode
+                    code: e.keyCode,
+                    player: playerNum
                 });
             }
         });
