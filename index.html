@@ -26,10 +26,9 @@
     <script>
         var socket = io();
         $('body').on('keydown', function(e){
-            console.dir(e);
-//            socket.emit('key', {
-//                code:
-//            });
+            socket.emit('key', {
+                code: e.keyCode
+            });
         });
     </script>
 </body>
