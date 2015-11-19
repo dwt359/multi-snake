@@ -36,8 +36,13 @@ io.on('connection', function(socket){
     players++;
     io.emit('playerList', playerList);
     console.log('a user connected');
+
+    //receiving from clients
     socket.on('key', function(e){
-        console.log(e);
+        io.emit('keyPress', e);
+    });
+    socket.on('killSegment', function(e){
+        io.emit('deleteSegment', e);
     });
 });
 
