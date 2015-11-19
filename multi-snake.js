@@ -29,7 +29,8 @@ io.on('connection', function(socket){
                 y: 0
             },
             dir: 'down',
-            len: 3
+            len: 3,
+            color: randomColor()
         });
     }
     players++;
@@ -39,3 +40,15 @@ io.on('connection', function(socket){
         console.log(e);
     });
 });
+
+//functions
+function randomColor(){
+    var colors = ['red', 'green', 'blue', 'orange', 'yellow'];
+    var color = colors[Math.floor(Math.random() * colors.length)];
+    for(var i in playerList){
+        if(playerList[i].color == color){
+            color = randomColor();
+        }
+    }
+    return color;
+}
