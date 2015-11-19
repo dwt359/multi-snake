@@ -12,12 +12,14 @@ http.listen(8080, function(){
 
 //start app
 var host = false;
+var players = 0;
 
 io.on('connection', function(socket){
     if(!host){
         host = true;
         socket.emit('host');
     }
+    socket.emit('player', players++);
     console.log('a user connected');
     socket.on('key', function(e){
         console.log(e);

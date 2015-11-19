@@ -30,6 +30,7 @@
             host = true;
         });
         socket.on('player', function(e){
+            console.dir(e);
             playerNum = e;
         });
         $('body').on('keydown', function(e){
