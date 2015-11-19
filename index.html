@@ -6,8 +6,6 @@
     <title>Multi-Snake: Lobby</title>
     <style>
         canvas{
-            width: 500px;
-            height: 500px;
             border: 1px solid black;
             margin-right: auto;
             margin-left: auto;
@@ -20,7 +18,7 @@
 </head>
 <body>
     <h1>Multi-Snake!</h1>
-    <canvas id="game-canvas"></canvas>
+    <canvas id="game-canvas" height="500" weight="500"></canvas>
     <script>
         var socket = io();
         var host = false;
@@ -54,7 +52,7 @@
             for(var i in playerList){
                 console.dir(playerList[i]);
                 ctx.fillStyle = playerList[i].color;
-                ctx.fillRect(playerList[i].pos.x,playerList[i].pos.y,10,10);
+                ctx.fillRect(playerList[i].pos.x*10,playerList[i].pos.y*10,10,10);
             }
         }
     </script>
