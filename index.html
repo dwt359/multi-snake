@@ -25,16 +25,19 @@
         var socket = io();
         var host = false;
         var playerNum = -1;
+        var playerList = [];
         socket.on('host', function(e){
-            console.dir(e);
             host = true;
+
         });
         socket.on('player', function(e){
-            console.dir(e);
             playerNum = e;
         });
+        socket.on('playerList', function(e){
+            playerList = e;
+        });
         $('body').on('keydown', function(e){
-            if(e.keyCode >= 37 && e.keyCode <= 40) {
+            if(playerNum < 4 && e.keyCode >= 37 && e.keyCode <= 40) {
                 socket.emit('key', {
                     code: e.keyCode,
                     player: playerNum

@@ -13,13 +13,27 @@ http.listen(8080, function(){
 //start app
 var host = false;
 var players = 0;
+var playerList = [];
 
 io.on('connection', function(socket){
     if(!host){
         host = true;
         socket.emit('host');
     }
-    socket.emit('player', players++);
+    socket.emit('player', players);
+    if(players < 4) {
+        playerList.push({
+            num: players,
+            pos: {
+                x: 10 * players,
+                y: 0
+            },
+            dir: 'down',
+            len: 3
+        });
+    }
+    players++;
+    io.emit('playerList', playerList);
     console.log('a user connected');
     socket.on('key', function(e){
         console.log(e);
