@@ -26,9 +26,11 @@
     <script>
         var socket = io();
         $('body').on('keydown', function(e){
-            socket.emit('key', {
-                code: e.keyCode
-            });
+            if(e.keyCode >= 37 && e.keyCode <= 40) {
+                socket.emit('key', {
+                    code: e.keyCode
+                });
+            }
         });
     </script>
 </body>
