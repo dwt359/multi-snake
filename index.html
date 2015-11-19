@@ -23,6 +23,11 @@
     <canvas id="game-canvas"></canvas>
     <script>
         var socket = io();
+        var host = false;
+        socket.on('host', function(e){
+            console.dir(e);
+            host = true;
+        });
         $('body').on('keydown', function(e){
             if(e.keyCode >= 37 && e.keyCode <= 40) {
                 socket.emit('key', {

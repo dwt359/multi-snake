@@ -10,7 +10,13 @@ http.listen(8080, function(){
 	console.log('listening on *:8080');
 });
 
+//start app
+var host = false;
+
 io.on('connection', function(socket){
+    if(!host){
+        socket.emit('host');
+    }
     console.log('a user connected');
     socket.on('key', function(e){
         console.log(e);
