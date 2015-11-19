@@ -15,6 +15,7 @@ var host = false;
 
 io.on('connection', function(socket){
     if(!host){
+        host = true;
         socket.emit('host');
     }
     console.log('a user connected');
