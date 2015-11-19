@@ -26,9 +26,8 @@
         var host = false;
         var playerNum = -1;
         var playerList = [];
-        socket.on('host', function(e){
+        socket.on('host', function(){
             host = true;
-
         });
         socket.on('player', function(e){
             playerNum = e;
@@ -37,13 +36,26 @@
             playerList = e;
         });
         $('body').on('keydown', function(e){
-            if(playerNum < 4 && e.keyCode >= 37 && e.keyCode <= 40) {
+            if(playerNum < 4 && playerNum >= 0 && e.keyCode >= 37 && e.keyCode <= 40) {
                 socket.emit('key', {
                     code: e.keyCode,
-                    player: playerNum
+                    player: playerNum,
+                    color: randomColor()
                 });
             }
         });
+
+        //functions
+        function randomColor(){
+            var colors = ['red', 'green', 'blue', 'orange', 'yellow'];
+            var color = colors[Math.floor(Math.random() * colors.length)];
+            for(var i in playerList){
+                if(playerList[i].color == color){
+                    color = randomColor();
+                }
+            }
+            return color;
+        }
     </script>
 </body>
 </html>

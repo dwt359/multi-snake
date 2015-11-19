@@ -25,7 +25,7 @@ io.on('connection', function(socket){
         playerList.push({
             num: players,
             pos: {
-                x: 10 * players,
+                x: 10 * (players + 1),
                 y: 0
             },
             dir: 'down',
