@@ -25,7 +25,7 @@
         var gameStarted = false;
         var playerNum = -1;
         var playerList = [];
-        var occupied = [];
+        var segments = [];
         var canvas = document.getElementById("game-canvas");
         var ctx = canvas.getContext("2d");
         socket.on('host', function(){
@@ -50,9 +50,39 @@
         //functions
         function renderPlayers(){
             for(var i in playerList){
-                console.dir(playerList[i]);
                 ctx.fillStyle = playerList[i].color;
                 ctx.fillRect(playerList[i].pos.x*10,playerList[i].pos.y*10,10,10);
+            }
+        }
+        function addToSegmentList(){
+            if(host) {
+                for (var i in playerList) {
+                    segments.push({
+                        pos: {
+                            x: playerList[i].pos.x,
+                            y: playerList[i].pos.y
+                        },
+                        dies: playerList[i].len
+                    });
+                }
+            }
+            else{
+                alert('Nice try, buddy.');
+            }
+        }
+        function expireSegments(){
+            if(host){
+                for(var i in segments){
+                    segments[i].dies--;
+                    if(segments[i].dies <= 0){
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(segments[i].pos.x*10,segments[i].pos.y*10,10,10);
+                        segments.splice(i,1);
+                    }
+                }
+            }
+            else{
+                alert('Nice try, buddy.');
             }
         }
     </script>
