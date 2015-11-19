@@ -43,7 +43,7 @@ io.on('connection', function(socket){
 
 //functions
 function randomColor(){
-    var colors = ['red', 'green', 'blue', 'orange', 'yellow'];
+    var colors = ['red', 'green', 'blue', 'orange', 'purple'];
     var color = colors[Math.floor(Math.random() * colors.length)];
     for(var i in playerList){
         if(playerList[i].color == color){
