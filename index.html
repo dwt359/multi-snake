@@ -186,7 +186,7 @@
                     y: Math.floor(Math.random() * 50)
                 };
                 for(var i in segments){
-                    if(segments[i].x == pellet.x && segments[i].y == pellet.y){
+                    if(segments[i].pos.x == pellet.x && segments[i].pos.y == pellet.y){
                         pellet = newPellet();
                         break;
                     }
@@ -238,7 +238,7 @@
                                 continue;
                             }
                             for (var j in segments) {
-                                if (playerList[i].pos.x == segments[j].x && playerList[i].pos.y == segments[j].y) {
+                                if (playerList[i].pos.x == segments[j].pos.x && playerList[i].pos.y == segments[j].pos.y) {
                                     playerList[i].dead = true;
                                     console.log('dead by segment collision');
                                     console.dir(playerList[i]);
