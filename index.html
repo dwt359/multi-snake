@@ -52,7 +52,6 @@
             //receiving from the server
             socket.on('host', function () {
                 host = true;
-                console.dir($('#game-start'));
                 $('#game-start').show();
             });
             socket.on('player', function (e) {
@@ -84,7 +83,6 @@
 
                     }
                     playerList[e.player].dir = (checkDirections(playerList[e.player].dir, dir)) ? dir : playerList[e.player].dir;
-                    console.dir(playerList[e.player]);
                 }
             });
             socket.on('deleteSegment', function (e) {
@@ -100,6 +98,7 @@
             });
             socket.on('pellet', function(e){
                 currentPellet = e;
+                console.dir(currentPellet);
                 renderPellet();
             });
 
