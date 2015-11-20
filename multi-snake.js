@@ -48,6 +48,9 @@ io.on('connection', function(socket){
         playerList = e;
         io.emit('playerList', playerList);
     });
+    socket.on('startGame', function(){
+        io.emit('start');
+    });
 });
 
 //functions

@@ -102,7 +102,7 @@
             });
             $('#game-start').click(function(){
                 if(host){
-                    alert('start game');
+                    socket.emit('startGame');
                 }
                 else{
                     alert('Nice try, buddy.');
