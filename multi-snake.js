@@ -44,6 +44,10 @@ io.on('connection', function(socket){
     socket.on('killSegment', function(e){
         io.emit('deleteSegment', e);
     });
+    socket.on('updatePlayers', function(e){
+        playerList = e;
+        io.emit('playerList', playerList);
+    });
 });
 
 //functions
