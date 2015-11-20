@@ -238,7 +238,7 @@
                                 continue;
                             }
                             for (var j in segments) {
-                                if (playerList[i].pos.x === segments[j].x && playerList[i].pos.y === segments[j].y) {
+                                if (playerList[i].pos.x == segments[j].x && playerList[i].pos.y == segments[j].y) {
                                     playerList[i].dead = true;
                                     console.log('dead by segment collision');
                                     console.dir(playerList[i]);
