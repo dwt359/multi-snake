@@ -43,16 +43,12 @@
         });
         socket.on('player', function(e){
             playerNum = e;
+            updateColorDisplay()
         });
         socket.on('playerList', function(e){
             playerList = e;
             renderPlayers();
-            for(var i in playerList){
-                if(playerList[i].num == playerNum){
-                    $('p#color-paragraph').show();
-                    $('div#player-color').style('background-color: '+playerList[i].color);
-                }
-            }
+            updateColorDisplay()
         });
         socket.on('keyPress', function(e){
             if(host){
@@ -130,6 +126,14 @@
             }
             else{
                 alert('Nice try, buddy.');
+            }
+        }
+        function updateColorDisplay(){
+            for(var i in playerList){
+                if(playerList[i].num == playerNum){
+                    $('p#color-paragraph').show();
+                    $('div#player-color').style('background-color: '+playerList[i].color);
+                }
             }
         }
         function checkDirections(current, updated){
