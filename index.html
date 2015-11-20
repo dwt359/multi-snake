@@ -91,9 +91,11 @@
             });
             socket.on('start', function(){
                 if(host){
+                    socket.emit('pellet', newPellet());
+                    addToSegmentList();
                     window.setInterval(function(){
                         gameStep();
-                    }, 100);
+                    }, 500);
                 }
             });
             socket.on('pellet', function(e){
