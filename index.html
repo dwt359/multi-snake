@@ -28,117 +28,124 @@
     <p id="color-paragraph">Your color is: <div id="player-color"></div></p>
     <canvas id="game-canvas" height="500" width="500"></canvas>
     <script>
-        var socket = io();
-        var host = false;
-        var gameStarted = false;
-        var playerNum = -1;
-        var playerList = [];
-        var segments = [];
-        var canvas = document.getElementById("game-canvas");
-        var ctx = canvas.getContext("2d");
+        $(function() {
+            var socket = io();
+            var host = false;
+            var gameStarted = false;
+            var playerNum = -1;
+            var playerList = [];
+            var segments = [];
+            var canvas = document.getElementById("game-canvas");
+            var ctx = canvas.getContext("2d");
 
-        //receiving from the server
-        socket.on('host', function(){
-            host = true;
-        });
-        socket.on('player', function(e){
-            playerNum = e;
-            updateColorDisplay()
-        });
-        socket.on('playerList', function(e){
-            playerList = e;
-            renderPlayers();
-            updateColorDisplay()
-        });
-        socket.on('keyPress', function(e){
-            if(host){
-                var dir = "";
-                switch(e.code){
-                    case 37:
-                        dir = "left";
-                        break;
-                    case 38:
-                        dir = "up";
-                        break;
-                    case 39:
-                        dir = "right";
-                        break;
-                    case 40:
-                        dir = "down";
-                        break;
-                    default:
+            //receiving from the server
+            socket.on('host', function () {
+                host = true;
+            });
+            socket.on('player', function (e) {
+                playerNum = e;
+                updateColorDisplay()
+            });
+            socket.on('playerList', function (e) {
+                playerList = e;
+                renderPlayers();
+                updateColorDisplay()
+            });
+            socket.on('keyPress', function (e) {
+                if (host) {
+                    var dir = "";
+                    switch (e.code) {
+                        case 37:
+                            dir = "left";
+                            break;
+                        case 38:
+                            dir = "up";
+                            break;
+                        case 39:
+                            dir = "right";
+                            break;
+                        case 40:
+                            dir = "down";
+                            break;
+                        default:
 
+                    }
+                    playerList[e.player].dir = (checkDirections(playerList[e.player].dir, dir)) ? dir : playerList[e.player].dir;
+                    console.dir(playerList[e.player]);
                 }
-                playerList[e.player].dir = (checkDirections(playerList[e.player].dir, dir)) ? dir : playerList[e.player].dir;
-                console.dir(playerList[e.player]);
-            }
-        });
-        socket.on('deleteSegment', function(e){
-            ctx.fillStyle = "white";
-            ctx.fillRect(e.x*10, e.y*10,10,10);
-        });
+            });
+            socket.on('deleteSegment', function (e) {
+                ctx.fillStyle = "white";
+                ctx.fillRect(e.x * 10, e.y * 10, 10, 10);
+            });
 
-        //controls
-        $('body').on('keydown', function(e){
-            if(playerNum < 4 && playerNum >= 0 && e.keyCode >= 37 && e.keyCode <= 40) {
-                socket.emit('key', {
-                    code: e.keyCode,
-                    player: playerNum
-                });
-            }
-        });
-
-        //functions
-        function renderPlayers(){
-            for(var i in playerList){
-                ctx.fillStyle = playerList[i].color;
-                ctx.fillRect(playerList[i].pos.x*10,playerList[i].pos.y*10,10,10);
-            }
-        }
-        function addToSegmentList(){
-            if(host) {
-                for (var i in playerList) {
-                    segments.push({
-                        pos: {
-                            x: playerList[i].pos.x,
-                            y: playerList[i].pos.y
-                        },
-                        dies: playerList[i].len
+            //controls
+            $('body').on('keydown', function (e) {
+                if (playerNum < 4 && playerNum >= 0 && e.keyCode >= 37 && e.keyCode <= 40) {
+                    socket.emit('key', {
+                        code: e.keyCode,
+                        player: playerNum
                     });
                 }
+            });
+
+            //functions
+            function renderPlayers() {
+                for (var i in playerList) {
+                    ctx.fillStyle = playerList[i].color;
+                    ctx.fillRect(playerList[i].pos.x * 10, playerList[i].pos.y * 10, 10, 10);
+                }
             }
-            else{
-                alert('Nice try, buddy.');
-            }
-        }
-        function expireSegments(){
-            if(host){
-                for(var i in segments){
-                    segments[i].dies--;
-                    if(segments[i].dies <= 0){
-                        socket.emit('killSegment', {
-                            x: segments[i].pos.x,
-                            y: segments[i].pos.y
+
+            function addToSegmentList() {
+                if (host) {
+                    for (var i in playerList) {
+                        segments.push({
+                            pos: {
+                                x: playerList[i].pos.x,
+                                y: playerList[i].pos.y
+                            },
+                            dies: playerList[i].len
                         });
-                        segments.splice(i,1);
+                    }
+                }
+                else {
+                    alert('Nice try, buddy.');
+                }
+            }
+
+            function expireSegments() {
+                if (host) {
+                    for (var i in segments) {
+                        segments[i].dies--;
+                        if (segments[i].dies <= 0) {
+                            socket.emit('killSegment', {
+                                x: segments[i].pos.x,
+                                y: segments[i].pos.y
+                            });
+                            segments.splice(i, 1);
+                        }
+                    }
+                }
+                else {
+                    alert('Nice try, buddy.');
+                }
+            }
+
+            function updateColorDisplay() {
+                for (var i in playerList) {
+                    if (playerList[i].num == playerNum) {
+                        alert("You're "+playerList[i].color);
+                        $('p#color-paragraph').show();
+                        $('div#player-color').css('background-color: ' + playerList[i].color);
                     }
                 }
             }
-            else{
-                alert('Nice try, buddy.');
+
+            function checkDirections(current, updated) {
+                return !((current == "up" || current == "down") && (updated == "up" || updated == "down")) && !((current == "left" || current == "right") && (updated == "left" || updated == "right"));
             }
-        }
-        function updateColorDisplay(){
-            for(var i in playerList){
-                if(playerList[i].num == playerNum){
-                    $('p#color-paragraph').show();
-                    $('div#player-color').css('background-color: '+playerList[i].color);
-                }
-            }
-        }
-        function checkDirections(current, updated){
-            return !((current == "up" || current == "down") && (updated == "up" || updated == "down")) && !((current == "left" || current == "right") && (updated == "left" || updated == "right"));
-        }
+        });
     </script>
 </body>
 </html>
