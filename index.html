@@ -19,10 +19,8 @@
             height: 10px;
         }
         p#color-paragraph{
-            display: none;
         }
         #game-start{
-            display: none;
         }
     </style>
 </head>
@@ -33,6 +31,8 @@
     <button id="game-start">Start Game</button>
     <script>
         $(function() {
+            $('#color-paragraph').hide();
+            $('#game-start').hide();
             var socket = io();
             var host = false;
             var gameStarted = false;
