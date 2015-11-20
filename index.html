@@ -95,7 +95,7 @@
                     addToSegmentList();
                     window.setInterval(function(){
                         gameStep();
-                    }, 500);
+                    }, 250);
                 }
             });
             socket.on('pellet', function(e){
@@ -140,7 +140,8 @@
                                 x: playerList[i].pos.x,
                                 y: playerList[i].pos.y
                             },
-                            dies: playerList[i].len
+                            dies: playerList[i].len,
+                            player: i
                         });
                     }
                 }
@@ -270,7 +271,7 @@
                             //destroy pellet
                             socket.emit('pellet', newPellet());
                             //increase length of snake
-                            playerList[i].len++;
+                            growSnake(i);
                             //break
                             break;
                         }
@@ -278,6 +279,15 @@
                 }
                 else{
                     alert('Nice try, buddy.');
+                }
+            }
+
+            function growSnake(i) {
+                playerList[i].len++;
+                for(var j in segments){
+                    if(segments[j].player == i){
+                        segments[j].dies++;
+                    }
                 }
             }
 
