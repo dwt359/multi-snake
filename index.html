@@ -169,7 +169,6 @@
             function updateColorDisplay() {
                 for (var i in playerList) {
                     if (playerList[i].num == playerNum) {
-                        alert("You're "+playerList[i].color);
                         $('p#color-paragraph').show();
                         $('div#player-color').css('background-color: ' + playerList[i].color);
                     }
