@@ -45,6 +45,7 @@
             var playerNum = -1;
             var playerList = [];
             var segments = [];
+            var currentPellet = {};
             var canvas = document.getElementById("game-canvas");
             var ctx = canvas.getContext("2d");
 
@@ -90,6 +91,17 @@
                 ctx.fillStyle = "white";
                 ctx.fillRect(e.x * 10, e.y * 10, 10, 10);
             });
+            socket.on('start', function(){
+                if(host){
+                    window.setInterval(function(){
+                        gameStep();
+                    }, 100);
+                }
+            });
+            socket.on('pellet', function(e){
+                currentPellet = e;
+                renderPellet();
+            });
 
             //controls
             $('body').on('keydown', function (e) {
@@ -112,8 +124,10 @@
             //functions
             function renderPlayers() {
                 for (var i in playerList) {
-                    ctx.fillStyle = playerList[i].color;
-                    ctx.fillRect(playerList[i].pos.x * 10, playerList[i].pos.y * 10, 10, 10);
+                    if(!playerList[i].dead) {
+                        ctx.fillStyle = playerList[i].color;
+                        ctx.fillRect(playerList[i].pos.x * 10, playerList[i].pos.y * 10, 10, 10);
+                    }
                 }
             }
 
@@ -166,24 +180,45 @@
                 return !((current == "up" || current == "down") && (updated == "up" || updated == "down")) && !((current == "left" || current == "right") && (updated == "left" || updated == "right"));
             }
 
+            function newPellet(){
+                var pellet = {
+                    x: Math.floor(Math.random() * 50),
+                    y: Math.floor(Math.random() * 50)
+                };
+                for(var i in segments){
+                    if(segments[i].x == pellet.x && segments[i].y == pellet.y){
+                        pellet = newPellet();
+                        break;
+                    }
+                }
+                return pellet;
+            }
+
+            function renderPellet(){
+                ctx.fillStyle = "black";
+                ctx.fillRect(currentPellet.x*10+2,currentPellet.y*10+2,6,6);
+            }
+
             function movePlayers(){
                 if(host){
-                    for(var i in playerList){
-                        switch(playerList[i].dir){
-                            case "up":
-                                playerList[i].pos.y++;
-                                break;
-                            case "down":
-                                playerList[i].pos.y--;
-                                break;
-                            case "left":
-                                playerList[i].pos.x--;
-                                break;
-                            case "right":
-                                playerList[i].pos.x++;
-                                break;
-                            default:
-                                console.log('Well, damn.');
+                    for(var i in playerList) {
+                        if (!playerList[i].dead) {
+                            switch (playerList[i].dir) {
+                                case "up":
+                                    playerList[i].pos.y--;
+                                    break;
+                                case "down":
+                                    playerList[i].pos.y++;
+                                    break;
+                                case "left":
+                                    playerList[i].pos.x--;
+                                    break;
+                                case "right":
+                                    playerList[i].pos.x++;
+                                    break;
+                                default:
+                                    console.log('Well, damn.');
+                            }
                         }
                     }
                 }
@@ -195,14 +230,16 @@
             function checkCollisions(){
                 if(host){
                     for(var i in playerList){
-                        if(playerList[i].pos.x > 500 || playerList[i].pos.x < 0 || playerList[i].pos.y > 500 || playerList[i].pos.y < 0){
-                            playerList.splice(i,1);
-                            continue;
-                        }
-                        for(var j in segments){
-                            if(playerList[i].pos.x === segments[j].x && playerList[i].pos.y === segments[j].y){
-                                playerList.splice(i,1);
-                                break;
+                        if(!playerList[i].dead) {
+                            if (playerList[i].pos.x > 500 || playerList[i].pos.x < 0 || playerList[i].pos.y > 500 || playerList[i].pos.y < 0) {
+                                playerList[i].dead = true;
+                                continue;
+                            }
+                            for (var j in segments) {
+                                if (playerList[i].pos.x === segments[j].x && playerList[i].pos.y === segments[j].y) {
+                                    playerList.[i].dead = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -221,12 +258,32 @@
                 }
             }
 
+            function checkGrowthCollision(){
+                if(host){
+                    for(var i in playerList){
+                        if(playerList[i].pos.x == currentPellet.x && playerList[i].pos.y == currentPellet.y){
+                            //destroy pellet
+                            socket.emit('pellet', newPellet());
+                            //increase length of snake
+                            playerList[i].len++;
+                            //break
+                            break;
+                        }
+                    }
+                }
+                else{
+                    alert('Nice try, buddy.');
+                }
+            }
+
             function gameStep(){
                 if(host){
                     //move all players
                     movePlayers();
                     //check for collisions
                     checkCollisions();
+                    //check growth collision
+                    checkGrowthCollision();
                     //add new segments
                     addToSegmentList();
                     //send new player list to server

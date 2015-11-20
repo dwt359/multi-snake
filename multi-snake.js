@@ -30,7 +30,8 @@ io.on('connection', function(socket){
             },
             dir: 'down',
             len: 3,
-            color: randomColor()
+            color: randomColor(),
+            dead: false
         });
     }
     players++;
@@ -51,6 +52,9 @@ io.on('connection', function(socket){
     socket.on('startGame', function(){
         io.emit('start');
     });
+    socket.on('pellet', function(e){
+        io.emit('pellet', e);
+    })
 });
 
 //functions
