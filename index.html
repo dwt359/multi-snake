@@ -231,13 +231,18 @@
                 if(host){
                     for(var i in playerList){
                         if(!playerList[i].dead) {
-                            if (playerList[i].pos.x > 500 || playerList[i].pos.x < 0 || playerList[i].pos.y > 500 || playerList[i].pos.y < 0) {
+                            if (playerList[i].pos.x >= 50 || playerList[i].pos.x < 0 || playerList[i].pos.y >= 50 || playerList[i].pos.y < 0) {
+                                console.log('dead by out of bounds');
                                 playerList[i].dead = true;
+                                console.dir(playerList[i]);
                                 continue;
                             }
                             for (var j in segments) {
                                 if (playerList[i].pos.x === segments[j].x && playerList[i].pos.y === segments[j].y) {
                                     playerList[i].dead = true;
+                                    console.log('dead by segment collision');
+                                    console.dir(playerList[i]);
+                                    console.dir(segments[j]);
                                     break;
                                 }
                             }
